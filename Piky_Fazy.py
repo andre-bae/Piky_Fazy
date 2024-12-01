@@ -23,16 +23,16 @@ instruction = ttk.Label(start_window, text=f'Это игра «Пики и фа�
                                            'то эта цифра – «пика» («корова»).\n'
                                            'Если же цифра не совпала по позиции с цифрой в исходном числе,\n'
                                            'то эта цифра – «фаза» («бык»).\n'
-                                           'Например, если загадано число 1294, а названо число 1429,\n'
-                                           'то это одна «пика» и три «фазы»',
+                                           'Например, загадано 1294, а названо 1429. То это 1 «пика» и 3 «фазы»\n'
+                                           'А если загадано 02444, а названо 04678. Это 1 «пика» и 1 «фаза», а не 3',
                         font=('Helvetica 10 bold italic'), padding=8)
 instruction.pack()
 
-f1 = Frame(start_window, width=50, height=50)
-f1.pack(anchor=NW)
-f2 = Frame(start_window, width=50, height=50)
+f1 = Frame(start_window, width=500, height=50)  # ,borderwidth=1, relief=SOLID)
+f1.pack(anchor=NW, padx=5)
+f2 = Frame(start_window, width=500, height=50)  # ,borderwidth=1, relief=SOLID)
 f2.pack(anchor=NW)
-f3 = Frame(start_window, width=50, height=50)
+f3 = Frame(start_window, width=500, height=50)  # ,borderwidth=1, relief=SOLID)
 f3.pack(anchor=NW)
 
 
@@ -77,11 +77,6 @@ enabled_checkbutton2 = ttk.Checkbutton(f3, variable=enabled2, offvalue=0, onvalu
 enabled_checkbutton2.pack(padx=6, pady=6, side=LEFT)
 
 
-def finish_start():
-    start_window.destroy()
-    log_window.destroy()
-
-
 # -------------------------Main---------------------------------------
 
 def read_popytka():  # Сравнение введенного и загаданного и вывод результата
@@ -123,6 +118,8 @@ def in_combobox(cb):  # Вводим число
     return p
 
 
+# ----------------------------------------------------------------
+
 def game():
     global cb, comboboxes, zagadano, repeat1
     label_kol.pack_forget()
@@ -130,6 +127,7 @@ def game():
     enabled_checkbutton1.pack_forget()
     enabled_checkbutton2.pack_forget()
     btn_start.pack_forget()
+    btn_SOS.pack(anchor=NE, padx=(90, 5), pady=5)
 
     if repeat:  # если в загаданном числе разрешены повторы
         repeat1 = repeat  # то и при вводе их нужно разрешать
@@ -142,9 +140,9 @@ def game():
         cb.pack(side=LEFT, padx=5, pady=5)
         cb.current(0)
         comboboxes.append(cb)
-    b = Button(f1, text="Ввод", bg="#A9A9A9",
-               font="Courier 12 bold", command=read_popytka)
-    b.pack(side=LEFT)
+    b = Button(f1, text="Ввод", bg="#A9A9A9", width=10,
+               font=("Arial", 14), command=read_popytka)
+    b.pack(side=LEFT, padx=(15, 5), pady=(5, 15))
     if repeat:
         label_cb1['text'] = "В загаданном числе\nцифры могут повторяться"
     else:
@@ -168,14 +166,29 @@ def game():
 
 # ----------------------------------------------------------------
 
+def finish_start():
+    start_window.destroy()
+    log_window.destroy()
+
+
+def sos():
+    text_rezult.insert(END, f'Вы сделали {skolko} попыток.\nА загадано было: {zagadano}\n')
+    start_window.destroy()
+
+
+# ----------------------------------------------------------------
+
 label_povtor = ttk.Label(f3, text="", font=("Arial", 14))
 label_povtor.pack(padx=5, pady=5, side=LEFT)
 
-btn_start = Button(f1, text="Играть", bg="#A9A9A9",
+btn_start = Button(f1, text="Играть", bg="#A9A9A9", width=10,
                    font=("Arial", 14), command=game)
-btn_start.pack(anchor=NE, padx=(150, 5), pady=5)
+btn_start.pack(anchor=NE, padx=(70, 5), pady=5)
 
-btn_fihish = Button(f3, text="Закончить", bg="#A9A9A9",
+btn_SOS = Button(f2, text="Сдаюсь", bg="#A9A9A9", width=10,
+                 font=("Arial", 14), command=sos)
+
+btn_fihish = Button(f3, text="Закончить", bg="#A9A9A9", width=10,
                     font=("Arial", 14), command=finish_start)
 btn_fihish.pack(anchor=NE, padx=(100, 5), pady=5)
 
