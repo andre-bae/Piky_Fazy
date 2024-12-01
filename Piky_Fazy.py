@@ -7,6 +7,8 @@ repeat = 0
 repeat1 = 1
 num = 5
 skolko = 0
+comboboxes = []
+zagadano = ''
 
 # --------------------Start Window--------------------------------------------
 
@@ -26,14 +28,14 @@ instruction = ttk.Label(start_window, text=f'Это игра «Пики и фа�
                                            'то эта цифра – «фаза» («корова»).\n'
                                            'Например, загадано 1294, а названо 1429. То это 1 «пика» и 3 «фазы»\n'
                                            'А если загадано 02444, а названо 04678. Это 1 «пика» и 1 «фаза», а не 3',
-                        font=('Helvetica 10 bold italic'), padding=8)
+                        font='Helvetica 10 bold italic', padding=8)
 instruction.pack()
 
-f1 = Frame(start_window, width=500, height=50, borderwidth=1, relief=SOLID)
+f1 = Frame(start_window, width=500, height=50)
 f1.pack(anchor=NW, padx=5)
-f2 = Frame(start_window, width=500, height=50, borderwidth=1, relief=SOLID)
+f2 = Frame(start_window, width=500, height=50)
 f2.pack(anchor=NW)
-f3 = Frame(start_window, width=500, height=50, borderwidth=1, relief=SOLID)
+f3 = Frame(start_window, width=500, height=50)
 f3.pack(anchor=NW)
 
 
@@ -42,7 +44,7 @@ def selected(event):
     num = int(cb_kol.get())
 
 
-digits = [3, 4, 5, 6]
+digits = ['3', '4', '5', '6']
 dg = StringVar(value=digits[2])
 label_kol = ttk.Label(f1, text='Количество цифр', font=("Arial", 14))
 label_kol.pack(side=LEFT, padx=5, pady=5)
@@ -81,16 +83,14 @@ enabled_checkbutton2.pack(padx=6, pady=6, side=LEFT)
 # -------------------------Main---------------------------------------
 
 def read_popytka():  # Сравнение введенного и загаданного и вывод результата
-    global skolko, cb
-    popytka = in_combobox(cb)
+    global skolko
+    popytka = in_combobox()
     p1 = ''
     z1 = ''
-    f = 0
-    p = 0
     pika = 0
     faza = 0
     for i in range(num):  # Подсчет угаданных цифр на своем месте (Быков)
-        if (popytka[i] == zagadano[i]):
+        if popytka[i] == zagadano[i]:
             pika += 1  # [i] = 1
         else:
             p1 += popytka[i]
@@ -123,13 +123,12 @@ def read_popytka():  # Сравнение введенного и загадан
 
 # ----------------------------------------------------------------
 
-def in_combobox(cb):  # Вводим число
+def in_combobox():  # Вводим число
     p = ''
     for i, cb in enumerate(comboboxes, start=1):
         tt = cb.get()
         if repeat1 != 1 and tt in p:
-            return ''  # Исключаем повторяющеся цифры во вводимом числе
-            break
+            return ''  # Исключаем повторяющиеся цифры во вводимом числе
         else:
             p += tt
     return p
@@ -138,7 +137,7 @@ def in_combobox(cb):  # Вводим число
 # ----------------------------------------------------------------
 
 def game():
-    global cb, comboboxes, zagadano, repeat1
+    global comboboxes, zagadano, repeat1
     label_kol.pack_forget()
     cb_kol.pack_forget()
     enabled_checkbutton1.pack_forget()
@@ -149,7 +148,7 @@ def game():
     if repeat:  # если в загаданном числе разрешены повторы
         repeat1 = repeat  # то и при вводе их нужно разрешать
 
-    digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     comboboxes = []
     for i in range(1, num + 1):
         cb = ttk.Combobox(f1, values=digits, font=("Arial", 14),
