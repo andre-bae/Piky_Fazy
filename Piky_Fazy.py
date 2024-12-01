@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter.scrolledtext import ScrolledText
 import random
 
 help_window = Tk()
@@ -16,7 +17,7 @@ instruction = ttk.Label(help_window, text=f'Это игра «Пики и фаз
                                           'то эта цифра – «фаза» («бык»).\n'
                                           'Например, если загадано число 1294, а названо число 1429,\n'
                                           'то это одна «пика» и три «фазы»',
-                        font=('Helvetica 12 bold italic'),
+                        font='Helvetica 12 bold italic',
                         background='yellow', foreground='brown', padding=8)
 instruction.pack()
 # ----------------------------------------------------------------
@@ -37,7 +38,9 @@ def select_slognost():
 
 #    print(slognost)
 
-header = ttk.Label(help_window, text='Введите уровень сложности игры')
+header = ttk.Label(help_window, text='Введите уровень сложности игры',
+                   font='Helvetica 12 bold italic',
+                   background='yellow', foreground='brown', padding=8)
 header.pack(**position)
 
 easy_btn = ttk.Radiobutton(text=easy, value=0,
@@ -59,12 +62,17 @@ def finish_help():
 
 #    print("Закрытие приложения")
 
+btn = Button(help_window, text="Click me", bg="#dbb042", fg="black",
+             activebackground="#b58919", activeforeground="black",
+             font=("Arial", 14), width=15, height=3, command=finish_help)
+btn.pack(pady=10)
+
 help_window.protocol("WM_DELETE_WINDOW", finish_help)
 
 help_window.mainloop()
 # ----------------------------------------------------------------
 
-if slognost != 0:
+if slognost != 0:  # , state=["disabled"]
     digits_window = Tk()
     digits_window.title("Выбор числа загаданных цифр")
     digits_window.resizable(False, False)
@@ -97,13 +105,18 @@ if slognost != 0:
                                   variable=selected_digit, command=select_digits)
         dig_btn.pack(**position)
 
+    btn = Button(digits_window, text="Click me", bg="#dbb042", fg="black",
+                 activebackground="#b58919", activeforeground="black",
+                 font=("Arial", 14), width=15, height=3, command=finish_digits)
+    btn.pack(pady=10)
+
     digits_window.protocol("WM_DELETE_WINDOW", finish_digits)
 
     digits_window.mainloop()
 else:
     num = 5
 # ----------------------------------------------------------------
-print(slognost, num)
+# print(slognost, num)
 
 zagadano = str(random.randint(0, 9))  # Загадываем заданное число цифр
 for i in range(1, num):
@@ -113,87 +126,79 @@ for i in range(1, num):
             fig = str(random.randint(0, 9))
     zagadano += fig
 #    print(zagadano)
-# zagadano='02763'
+# zagadano='13074'
 
-
-'''
+skolko = 0
+# while True:
+f = 0
+p = 0
+pika = [0] * num
+faza = [0] * num
+#    popytka = input(f'Введите {num} цифр ')
 main_window = Tk()
 main_window.title("Быки и коровы")
-#main_window.resizable(False, False)
+# main_window.resizable(False, False)
 main_window.attributes("-toolwindow", True)
-main_window.geometry("250x200+400+200")
+# main_window.geometry("250x200+400+200")
 
 frame_ask = Frame(main_window)
 frame_ask.pack(side=LEFT)
+frame_rezult = Frame(main_window)
+frame_rezult.pack(side=RIGHT)
+
 
 def read_popytka():
-    global popytka
+    global popytka, f, p, pika, faza, skolko
     popytka = e.get()
-
-invite = ttk.Label(frame_ask, text=f'Введите {num} цифр', justify="left",
-                   bg="gray", fg="white", font="Courier 18 bold")
-invite.pack(side=TOP)
-e = Entry(frame_ask, width=num, justify="left", bg="gray", fg="white",
-          font="Courier 18 bold")
-e.pack(side=LEFT)
-b = Button(frame_ask, text="Ввод", bg="grey",
-           font="Courier 12 bold", command=read_popytka)
-b.pack(side=LEFT)
-main_window.mainloop()
-'''
-
-skolko = 0
-while True:
+    e.delete(0, END)
     f = 0
     p = 0
     pika = [0] * num
     faza = [0] * num
-    #    popytka = input(f'Введите {num} цифр ')
-    main_window = Tk()
-    main_window.title("Быки и коровы")
-    # main_window.resizable(False, False)
-    main_window.attributes("-toolwindow", True)
-    main_window.geometry("250x200+400+200")
-
-    frame_ask = Frame(main_window)
-    frame_ask.pack(side=LEFT)
-
-
-    def read_popytka():
-        global popytka
-        popytka = e.get()
-
-
-    invite = Label(frame_ask, text=f'Введите {num} цифр', justify="left",
-                   bg="gray", fg="white", font="Courier 18 bold")
-    invite.pack(side=TOP)
-    e = Entry(frame_ask, width=num, justify="left", bg="gray", fg="white",
-              font="Courier 18 bold")
-    e.pack(side=LEFT)
-    b = Button(frame_ask, text="Ввод", bg="grey",
-               font="Courier 12 bold", command=read_popytka)
-    b.pack(side=LEFT)
-
     if popytka == '':  # завершение игры - ввод пустой строки
-        invite['text'] = f'Жаль! Всего {skolko} попыток! Было загадано {zagadano}'
-        break
-    while len(popytka) != num or not popytka.isdigit():  # Если введено не num цифр
-        popytka = input(f'Введите {num} цифр ')
-    for i in range(num):  # Подсчет угаданных цифр на своем месте (Быков)
-        pika[i] = (popytka[i] == zagadano[i])
-    for i in range(num):  # Подсчет угаданных цифр не на своем месте (коров)
-        if not pika[i]:
-            for j in range(num):
-                faza[i] += (not pika[j]) and (popytka[j] == zagadano[i])
-        #               print(i,j,pika,faza)
-        if faza[i]:  # Всего "быков" и "коров" в попытке
-            faza[i] = 1
-        f += faza[i]
-        p += pika[i]
-    print(f'Быков {p}, коров {f}')
-    skolko += 1  # Количество сделанных попыток
-    if popytka == zagadano:
-        invite['text'] = f'Вы угадали за {skolko} попыток! Это {zagadano}'
-        break
+        text_rezult.insert(END, f'Жаль! Всего {skolko} попыток! Было загадано {zagadano}\n')
+    #            break
+    else:
+        if len(popytka) == num and popytka.isdigit():  # Если введено не num цифр
+
+            for i in range(num):  # Подсчет угаданных цифр на своем месте (Быков)
+                pika[i] = (popytka[i] == zagadano[i])
+            for i in range(num):  # Подсчет угаданных цифр не на своем месте (коров)
+                if not pika[i]:
+                    for j in range(num):
+                        faza[i] += (not pika[j]) and (popytka[j] == zagadano[i])
+                #                        print(i,j,pika,faza)
+                if faza[i]:  # Всего "быков" и "коров" в попытке
+                    faza[i] = 1
+                f += faza[i]
+                p += pika[i]
+            text_rezult.insert(END, f'{popytka}: Быков {p}, коров {f}\n')
+            skolko += 1  # Количество сделанных попыток
+            if popytka == zagadano:
+                text_rezult.insert(END, f'Вы угадали за {skolko} попыток! Это {zagadano}\n')
+
+
+#                  break
+
+invite = Label(frame_ask, text=f'Введите {num} цифр', justify="left",
+               bg="white", fg="black", font="Courier 18 bold")
+invite.pack(side=TOP)
+e = Entry(frame_ask, width=num, justify="left", bg="white", fg="black",
+          font="Courier 24 bold")
+e.pack(side=LEFT)
+b = Button(frame_ask, text="Ввод", bg="brown",
+           font="Courier 12 bold", command=read_popytka)
+b.pack(side=LEFT)
+
+# text_rezult = Text(frame_rezult, width=40, height=8, bg="white", wrap=WORD)
+text_rezult = ScrolledText(frame_rezult, width=40, height=8, bg="white", wrap=WORD)
+text_rezult.pack(side=RIGHT)
+# text_rezult.grid(column = 0, row = 0, sticky = NSEW)
+# scroll = ttk.Scrollbar(orient = "vertical", command = text_rezult.yview)
+# scroll.grid(column = 1, row = 0, sticky = NS)
+# scroll = Scrollbar(command=text_rezult.yview)
+# scroll.pack(side=LEFT, fill=Y)
+# text_rezult.config(yscrollcommand=scroll.set)
+
 
 main_window.mainloop()
