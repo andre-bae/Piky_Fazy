@@ -3,120 +3,80 @@ from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 import random
 
-help_window = Tk()
-help_window.title("Описание игры")
-# help_window.resizable(False, False)
-help_window.attributes("-toolwindow", True)
+slognost = 0
+repeat = 0
+num = 5
 
-instruction = ttk.Label(help_window, text=f'Это игра «Пики и фазы» («Быки и коровы»).\n'
-                                          'Требуется угадать случайное четырехзначное число.\n'
-                                          'Вводятся пробные цифры.\n' \
-                                          'Если цифра по значению и позиции совпала с цифрой в исходном числе,\n'
-                                          'то эта цифра – «пика» («корова»).\n'
-                                          'Если же цифра не совпала по позиции с цифрой в исходном числе,\n'
-                                          'то эта цифра – «фаза» («бык»).\n'
-                                          'Например, если загадано число 1294, а названо число 1429,\n'
-                                          'то это одна «пика» и три «фазы»',
-                        font='Helvetica 12 bold italic',
+# ----------------------------------------------------------------
+start_window = Tk()
+start_window.title("Описание игры")
+start_window.resizable(False, False)
+start_window.attributes("-toolwindow", True)
+start_window.geometry("500x240+50+100")
+
+instruction = ttk.Label(start_window, text=f'Это игра «Пики и фазы» («Быки и коровы»).\n'
+                                           'Требуется угадать случайное число.\n'
+                                           'Вводятся пробные цифры.\n' \
+                                           'Если цифра по значению и позиции совпала с цифрой в исходном числе,\n'
+                                           'то эта цифра – «пика» («корова»).\n'
+                                           'Если же цифра не совпала по позиции с цифрой в исходном числе,\n'
+                                           'то эта цифра – «фаза» («бык»).\n'
+                                           'Например, если загадано число 1294, а названо число 1429,\n'
+                                           'то это одна «пика» и три «фазы»',
+                        font=('Helvetica 10 bold italic'),
                         background='yellow', foreground='brown', padding=8)
 instruction.pack()
-# ----------------------------------------------------------------
 
-position = {"padx": 6, "pady": 6, "anchor": NW}
-easy = "самый легкий. загадывается 5 не повторяющихся цифр"
-middle = "Средний. Загадывается от 3 до 6 не повторяющихся цифр"
-hard = "Сложный. Загадывается от 3 до 6 цифр, которые могут повторяться"
-
-slogn = IntVar(value=0)  # по умолчанию будет выбран элемент с value=0
-slognost = 0
+f1 = Frame(start_window, width=50, height=50)
+f1.pack(anchor=NW)
+f2 = Frame(start_window, width=50, height=50)
+f2.pack(anchor=NW)
 
 
-def select_slognost():
-    global slognost
-    slognost = slogn.get()
+def selected(event):
+    global num
+    num = int(combobox.get())
 
 
-#    print(slognost)
+#    print(num, type(num))
 
-header = ttk.Label(help_window, text='Введите уровень сложности игры',
-                   font='Helvetica 12 bold italic',
-                   background='yellow', foreground='brown', padding=8)
-header.pack(**position)
-
-easy_btn = ttk.Radiobutton(text=easy, value=0,
-                           variable=slogn, command=select_slognost)
-easy_btn.pack(**position)
-
-middle_btn = ttk.Radiobutton(text=middle, value=1,
-                             variable=slogn, command=select_slognost)
-middle_btn.pack(**position)
-
-hard_btn = ttk.Radiobutton(text=hard, value=2,
-                           variable=slogn, command=select_slognost)
-hard_btn.pack(**position)
+digits = [3, 4, 5, 6]
+dg = StringVar(value=digits[2])
+label = ttk.Label(f1, text='Количество цифр', font=("Arial", 14))
+label.pack(side=LEFT, padx=5, pady=5)
+combobox = ttk.Combobox(f1, textvariable=dg, font=("Arial", 14), values=digits, state="readonly", width=3, height=2)
+combobox.pack(side=LEFT, padx=5, pady=5)
+combobox.bind("<<ComboboxSelected>>", selected)
 
 
-def finish_help():
-    help_window.destroy()  # ручное закрытие окна и всего приложения
+def checkbutton_changed():
+    global repeat
+    repeat = enabled.get()
 
 
-#    print("Закрытие приложения")
+#    print(repeat)
 
-btn = Button(help_window, text="Click me", bg="#dbb042", fg="black",
+enabled = IntVar()
+label_cb = ttk.Label(f2, text="Цифры могут повторяться", font=("Arial", 14))
+label_cb.pack(padx=5, pady=5, side=LEFT)
+enabled_checkbutton = ttk.Checkbutton(f2, variable=enabled, offvalue=0, onvalue=1, command=checkbutton_changed)
+enabled_checkbutton.pack(padx=6, pady=6, side=LEFT)
+
+
+def finish_start():
+    start_window.destroy()
+
+
+btn = Button(start_window, text="Играть", bg="#dbb042", fg="black",
              activebackground="#b58919", activeforeground="black",
-             font=("Arial", 14), width=15, height=3, command=finish_help)
-btn.pack(pady=10)
+             font=("Arial", 14), width=10, height=2, command=finish_start)
+btn.place(x=370, y=170)  # pack(anchor=NE, padx=50, pady=10)
 
-help_window.protocol("WM_DELETE_WINDOW", finish_help)
-
-help_window.mainloop()
+start_window.protocol("WM_DELETE_WINDOW", finish_start)
+start_window.mainloop()
 # ----------------------------------------------------------------
 
-if slognost != 0:  # , state=["disabled"]
-    digits_window = Tk()
-    digits_window.title("Выбор числа загаданных цифр")
-    digits_window.resizable(False, False)
-    digits_window.attributes("-toolwindow", True)
-    #    digits_window.geometry("250x200+400+200")
-
-    position = {"padx": 6, "pady": 6, "anchor": NE}
-    digits = [3, 4, 5, 6]
-    selected_digit = IntVar(value=5)  # по умолчанию ничего не выборанно
-    num = 5
-    header = ttk.Label(digits_window, text="Сколько цифр будем отгадывать?")
-    header.pack(**position)
-
-
-    def finish_digits():
-        digits_window.destroy()  # ручное закрытие окна и всего приложения
-
-
-    #        print("Закрытие приложения")
-
-    def select_digits():
-        global num
-        num = selected_digit.get()
-
-
-    #        print(slognost, num)
-
-    for dig in digits:
-        dig_btn = ttk.Radiobutton(text=dig, value=dig,
-                                  variable=selected_digit, command=select_digits)
-        dig_btn.pack(**position)
-
-    btn = Button(digits_window, text="Click me", bg="#dbb042", fg="black",
-                 activebackground="#b58919", activeforeground="black",
-                 font=("Arial", 14), width=15, height=3, command=finish_digits)
-    btn.pack(pady=10)
-
-    digits_window.protocol("WM_DELETE_WINDOW", finish_digits)
-
-    digits_window.mainloop()
-else:
-    num = 5
-# ----------------------------------------------------------------
-# print(slognost, num)
+print(slognost, num)
 
 zagadano = str(random.randint(0, 9))  # Загадываем заданное число цифр
 for i in range(1, num):
