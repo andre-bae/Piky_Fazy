@@ -75,8 +75,7 @@ btn.place(x=370, y=170)  # pack(anchor=NE, padx=50, pady=10)
 start_window.protocol("WM_DELETE_WINDOW", finish_start)
 start_window.mainloop()
 # ----------------------------------------------------------------
-
-print(slognost, num)
+# print(slognost, num)
 
 zagadano = str(random.randint(0, 9))  # Загадываем заданное число цифр
 for i in range(1, num):
@@ -87,6 +86,7 @@ for i in range(1, num):
     zagadano += fig
 #    print(zagadano)
 # zagadano='13074'
+# ----------------------------------------------------------------
 
 skolko = 0
 # while True:
@@ -94,18 +94,11 @@ f = 0
 p = 0
 pika = [0] * num
 faza = [0] * num
+
+
 #    popytka = input(f'Введите {num} цифр ')
-main_window = Tk()
-main_window.title("Быки и коровы")
-# main_window.resizable(False, False)
-main_window.attributes("-toolwindow", True)
-# main_window.geometry("250x200+400+200")
 
-frame_ask = Frame(main_window)
-frame_ask.pack(side=LEFT)
-frame_rezult = Frame(main_window)
-frame_rezult.pack(side=RIGHT)
-
+# ----------------------------------------------------------------
 
 def read_popytka():
     global popytka, f, p, pika, faza, skolko
@@ -139,20 +132,57 @@ def read_popytka():
 
 
 #                  break
+# ----------------------------------------------------------------
+digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+# ----------------------------------------------------------------
+main_window = Tk()
+main_window.title("Быки и коровы")
+# main_window.resizable(False, False)
+main_window.attributes("-toolwindow", True)
+main_window.geometry("400x400+400+200")
+
+# frame_ask = Frame(main_window, borderwidth=1, relief=SOLID)
+# frame_ask.pack(side=LEFT)
+# frame_rezult = Frame(main_window, borderwidth=1, relief=SOLID)
+# frame_rezult.pack(side=RIGHT)
+comboboxes = []
+popytka = ''
+
+for i in range(1, num + 1):
+    print(i)
+    cb = ttk.Combobox(main_window, values=digits, font=("Arial", 14),
+                      state="readonly", width=3, height=10)
+    cb.pack(side=LEFT, padx=5, pady=5)  # grid(row=0, column=i)
+    cb.current(0)
+    comboboxes.append(cb)
+
+
+def print_values():
+    global popytka
+    for i, cb in enumerate(comboboxes, start=1):
+        #        tt = cb.get()
+        #        print(f"Combobox {i}: {tt}")
+        popytka += cb.get()
+        print(popytka)
+
+
+btn = Button(main_window, text="Print Values", command=print_values)
+btn.pack(side=LEFT, padx=5, pady=5)  # grid(row=3, column=0)
+
+'''
 invite = Label(frame_ask, text=f'Введите {num} цифр', justify="left",
-               bg="white", fg="black", font="Courier 18 bold")
+                       bg="white", fg="black", font="Courier 18 bold")
 invite.pack(side=TOP)
 e = Entry(frame_ask, width=num, justify="left", bg="white", fg="black",
-          font="Courier 24 bold")
+              font="Courier 24 bold")
 e.pack(side=LEFT)
 b = Button(frame_ask, text="Ввод", bg="brown",
-           font="Courier 12 bold", command=read_popytka)
+               font="Courier 12 bold", command=read_popytka)
 b.pack(side=LEFT)
-
+'''
 # text_rezult = Text(frame_rezult, width=40, height=8, bg="white", wrap=WORD)
-text_rezult = ScrolledText(frame_rezult, width=40, height=8, bg="white", wrap=WORD)
-text_rezult.pack(side=RIGHT)
+# text_rezult.pack(side=RIGHT)
 # text_rezult.grid(column = 0, row = 0, sticky = NSEW)
 # scroll = ttk.Scrollbar(orient = "vertical", command = text_rezult.yview)
 # scroll.grid(column = 1, row = 0, sticky = NS)
