@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 import random
+from collections import Counter
 
 repeat = 0
 repeat1 = 1
@@ -85,35 +86,20 @@ enabled_checkbutton2.pack(padx=6, pady=6, side=LEFT)
 def read_popytka():  # Сравнение введенного и загаданного и вывод результата
     global skolko
     popytka = in_combobox()
-    p1 = ''
-    z1 = ''
+
     pika = 0
-    faza = 0
     for i in range(num):  # Подсчет угаданных цифр на своем месте (Быков)
         if popytka[i] == zagadano[i]:
-            pika += 1  # [i] = 1
-        else:
-            p1 += popytka[i]
-            z1 += zagadano[i]
-    #    print(p1, z1)
+            pika += 1
 
-    l = len(p1)
-    while l != 0:  # Подсчет фаз
-        out = 0
-        for i in range(l):
-            figa = p1[i]
-            #            print(figa)
-            if min(p1.count(figa), z1.count(figa)) > 0:
-                out = 1
-                faza += 1
-                p1 = p1.replace(figa, '', 1)
-                z1 = z1.replace(figa, '', 1)
-                #                print(p1,z1,figa)
-                break
-        l = len(p1)
-        #        print(p1, z1, 'faza=', faza, i, l)
-        if out == 0:
-            break
+    # Создаём счётчики для цифр
+    zagadano_counts = Counter(zagadano)
+    popytka_counts = Counter(popytka)
+    # Находим общие цифры с учётом их количества
+    common = sum((zagadano_counts & popytka_counts).values())
+    # Коровы = общие цифры - быки
+    faza = common - pika
+
     #    print(pika, faza)
     skolko += 1  # Количество сделанных попыток
     text_rezult.insert(END, f'{skolko} {popytka}: Быков {pika}, коров {faza}\n')
